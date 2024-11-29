@@ -1,7 +1,7 @@
 import { AdaptiveEvents, Preload } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { MutableRefObject } from 'react';
-import Tunnel from './schemas/Tunnel';
+import Tunnel from './../schemas/Tunnel';
 
 export default function ThreeCanvas(props: {
   eventSource: MutableRefObject<HTMLElement>;

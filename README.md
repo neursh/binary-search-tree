@@ -1,8 +1,6 @@
 # Inorder Traversal of Binary Tree
 Yet another school project.
 
-# Research
-
 ## The project was made using WebGL. Why?
 The original idea was to make an SVG-based visualizer, by editing and adding elements right onto it.
 

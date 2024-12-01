@@ -20,6 +20,7 @@ export default function App() {
 
 function Middleware() {
   const ready = useHookstate(false);
+
   return (
     <>
       <IndexSchema>{ready.get() ? <></> : <></>}</IndexSchema>

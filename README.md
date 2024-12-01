@@ -1,5 +1,9 @@
-# Inorder Traversal of Binary Tree
+# Binary Search Tree
 Yet another school project.
+
+This project is absolutely riddled with weird implementations, like it's teasing React limits.
+
+But, it does provides the best performance and minimize re-renders as much as possible, in order to do that, I have to broke a ton of React rules...
 
 ## The project was made using WebGL. Why?
 The original idea was to make an SVG-based visualizer, by editing and adding elements right onto it.
@@ -13,7 +17,7 @@ To overcome this limitation, we moved to a GPU-based solution, `React Three` (`t
 ## Approach the problem
 
 ## Articles and discussions
-[Inorder Traversal of Binary Tree (geeksforgeeks.org)](https://www.geeksforgeeks.org/inorder-traversal-of-binary-tree/)
+[Binary Search Tree (geeksforgeeks.org)](https://www.geeksforgeeks.org/binary-search-tree-data-structure/)
 
 SVG Performace research:
 - [High CPU usage on SVG opacity animation (gsap.com/community)](https://gsap.com/community/forums/topic/16701-high-cpu-usage-on-svg-opacity-animation/)

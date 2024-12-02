@@ -10,9 +10,7 @@ export default function DisplayGraph() {
   useEffect(() => {
     if (container.current && !initialized.current) {
       initialized.current = true;
-      //start here
-      Context.Buildtree();
-      //end here
+
       const layout = new ForceSupervisor(Context.graph, {
         isNodeFixed: (_, attr) => attr.highlighted,
       });

@@ -82,14 +82,24 @@ class BinaryST {
 export default abstract class Context {
   static graph = new Graph();
 
-  static Buildtree(): void {
+  static Buildtree(sequence: string): void {
+    // Process the input
+    const matches = [...sequence.matchAll(/\d+/g)].join(' ');
+    const userInput = matches.split(' ').map((value) => parseFloat(value));
+
+    if (userInput.length === 0) {
+      return;
+    }
+
+    userInput.sort();
+
     // Reset graph first.
     this.graph.clear();
+
     // Implementation of Buildtree method
-    const userInput: number[] = [1, 2, 3, 4, 6, 7, 8, 9, 10];
-    userInput.sort();
     const root = new BinaryST();
     root.build(userInput);
+
     // root.insert(10);
     root.printTreeInorder();
   }

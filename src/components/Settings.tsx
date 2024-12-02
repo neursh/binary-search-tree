@@ -1,9 +1,12 @@
 import { useHookstate } from '@hookstate/core';
 import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import Context from '../context';
 
 export default function Settings() {
   const open = useHookstate(true);
   const updating = useHookstate(false);
+  const input = useRef<HTMLTextAreaElement>(null);
 
   return (
     <section className="fixed top-0 right-0">
@@ -46,14 +49,18 @@ export default function Settings() {
             duration: 0.5,
           }}
         >
-          <p>Input:</p>
-          <textarea className="w-full h-[calc(100%-8px)] ml-1 mr-1 outline-none resize-none font-mono" />
+          <p className="font-semibold">Input:</p>
+          <textarea
+            ref={input}
+            className="w-full h-[calc(100%-8px)] ml-1 mr-1 outline-none resize-none font-mono"
+          />
           <div className="flex justify-end">
             <motion.div
               className="h-6 cursor-pointer rounded-full outline-dotted outline-2 text-center overflow-hidden"
               onClick={() => {
                 if (!updating.get()) {
                   updating.set(true);
+                  Context.Buildtree(input.current!.value);
                   setTimeout(() => updating.set(false), 1000);
                 }
               }}

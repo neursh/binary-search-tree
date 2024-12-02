@@ -81,7 +81,10 @@ class BinaryST {
 
 export default abstract class Context {
   static graph = new Graph();
+
   static Buildtree(): void {
+    // Reset graph first.
+    this.graph.clear();
     // Implementation of Buildtree method
     const userInput: number[] = [1, 2, 3, 4, 6, 7, 8, 9, 10];
     userInput.sort();

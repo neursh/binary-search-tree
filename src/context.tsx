@@ -36,8 +36,8 @@ class BinaryST {
     const Node = new BSTNode(userInput[mid]);
     // console.log(Node.id);
 
-    Node.left = this.buildBST(userInput, mid + 1, end);
-    Node.right = this.buildBST(userInput, start, mid - 1);
+    Node.right = this.buildBST(userInput, mid + 1, end);
+    Node.left = this.buildBST(userInput, start, mid - 1);
 
     return Node;
   }
@@ -123,16 +123,16 @@ class BinaryST {
     this.printTree(root.right);
   }
   // find value in tree 
-  findValue(key: number): string[] {
-    let path: string[] = [];
+  findValue(key: number): number[] {
+    let path: number[] = [];
     this.find(this.root, key, path);
     return path;
   }
-  private find(root: BSTNode | null, key: number, path: string[]){
+  private find(root: BSTNode | null, key: number, path: number[]){
     if (!root) {
       return;
     }
-    path.push(root.id!);
+    path.push(root.value!);
     if (root.value === key) {
       return;
     } else if (root.value! < key) {

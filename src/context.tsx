@@ -71,7 +71,7 @@ class BinaryST {
   }
 
   private printTree(root: BSTNode | null): void {
-    if (root !== null && root.added === false) {
+    if (root && !root.added) {
       console.log(root.id);
       this.printTree(root.left);
       this.printTree(root.right);

@@ -17,7 +17,7 @@ export default function Note() {
       </Annotate>
       <Annotate>
         <div className="w-4 h-4 bg-[#663399] rounded-full"></div>
-        <p>Last node before failing</p>
+        <p>Last node travelled before failing</p>
       </Annotate>
       <Annotate>
         <div className="w-4 h-4 bg-yellow-300 rounded-full"></div>

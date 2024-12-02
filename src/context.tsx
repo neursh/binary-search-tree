@@ -122,13 +122,15 @@ class BinaryST {
     this.printTree(root.left);
     this.printTree(root.right);
   }
-  // find value in tree 
+
+  // find value in tree
   findValue(key: number): string[] {
-    let path: string[] = [];
+    const path: string[] = [];
     this.find(this.root, key, path);
     return path;
   }
-  private find(root: BSTNode | null, key: number, path: string[]){
+
+  private find(root: BSTNode | null, key: number, path: string[]) {
     if (!root) {
       return;
     }
@@ -141,12 +143,10 @@ class BinaryST {
       this.find(root.left, key, path);
     }
   }
-
 }
 
 export default abstract class Context {
   static graph = new Graph();
-
   static tree = new BinaryST();
 
   static buildTree(sequence: string): void {

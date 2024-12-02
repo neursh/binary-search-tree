@@ -6,10 +6,20 @@ import Context from '../context';
 const Settings = forwardRef<HTMLElement>((_, container) => {
   container = container as MutableRefObject<HTMLElement>;
 
+  const pathCache = useRef<string[]>([]);
+
   const containerReceived = useHookstate(false);
   const open = useHookstate(true);
   const updating = useHookstate(false);
+
   const input = useRef<HTMLTextAreaElement>(null);
+  const findNodeInput = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (updating.get()) {
+      pathCache.current = [];
+    }
+  }, [updating]);
 
   useEffect(() => {
     if (container.current) {
@@ -65,7 +75,50 @@ const Settings = forwardRef<HTMLElement>((_, container) => {
               ref={input}
               className="w-full h-[calc(100%-8px)] ml-1 mr-1 outline-none resize-none font-mono bg-transparent"
             />
-            <div className="flex justify-end">
+            <div className="flex justify-between">
+              <div className="flex gap-2">
+                <p className="font-semibold">Find node:</p>
+                <input
+                  ref={findNodeInput}
+                  className="bg-transparent outline-none"
+                  onChange={() => {
+                    const value = findNodeInput.current!.value;
+
+                    if (pathCache.current.length !== 0 || value === '') {
+                      pathCache.current.forEach((id) => {
+                        const nodeAttributes =
+                          Context.graph.getNodeAttributes(id);
+                        nodeAttributes.color = 'black';
+                      });
+
+                      pathCache.current = [];
+                    }
+
+                    if (value !== '') {
+                      pathCache.current = Context.tree.findValue(
+                        parseFloat(value)
+                      );
+
+                      pathCache.current.forEach((id) => {
+                        const nodeAttributes =
+                          Context.graph.getNodeAttributes(id);
+                        nodeAttributes.color = 'yellow';
+                      });
+
+                      const lastResult = value;
+                      const actualNodePointed = Context.graph.getNodeAttributes(
+                        pathCache.current.slice(-1)
+                      );
+
+                      if (actualNodePointed.label != lastResult) {
+                        actualNodePointed.color = '#663399';
+                      } else {
+                        actualNodePointed.color = 'green';
+                      }
+                    }
+                  }}
+                />
+              </div>
               <motion.div
                 className="h-6 cursor-pointer rounded-full outline-dotted outline-2 text-center overflow-hidden"
                 onClick={() => {

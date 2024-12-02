@@ -10,7 +10,29 @@ export default function DisplayGraph() {
   useEffect(() => {
     if (container.current && !initialized.current) {
       initialized.current = true;
+      // start here 
+      Context.Buildtree();
+      // Context.graph.addNode('1', {
+      //   label: '1',
+      //   x: 0,
+      //   y: 0,
+      //   size: 40,
+      //   color: '#1f2937',
+      // });
+      
+      // Context.graph.addNode('2', {
+      //   label: '2',
+      //   x: 0,
+      //   y: 0,
+      //   size: 40,
+      //   color: '#1f2937',
+      // });
+      // Context.graph.addEdge('1', '2', {
+      //   size: 7,
+      //   color: '#1f2937',
+      // })
 
+      //end here
       const layout = new ForceSupervisor(Context.graph, {
         isNodeFixed: (_, attr) => attr.highlighted,
       });

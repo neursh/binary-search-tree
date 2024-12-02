@@ -7,8 +7,8 @@ export default function App() {
   return (
     <>
       <main ref={mainRef} className="min-h-[100vh] min-w-full">
-        <Settings />
         <DisplayGraph />
+        <Settings />
       </main>
     </>
   );

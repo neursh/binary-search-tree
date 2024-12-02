@@ -122,6 +122,26 @@ class BinaryST {
     this.printTree(root.left);
     this.printTree(root.right);
   }
+  // find value in tree 
+  findValue(key: number): string[] {
+    let path: string[] = [];
+    this.find(this.root, key, path);
+    return path;
+  }
+  private find(root: BSTNode | null, key: number, path: string[]){
+    if (!root) {
+      return;
+    }
+    path.push(root.id!);
+    if (root.value === key) {
+      return;
+    } else if (root.value! < key) {
+      this.find(root.right, key, path);
+    } else {
+      this.find(root.left, key, path);
+    }
+  }
+
 }
 
 export default abstract class Context {
@@ -149,5 +169,6 @@ export default abstract class Context {
 
     // root.insert(10);
     Context.tree.printTreeInorder();
+    console.log(Context.tree.findValue(1));
   }
 }

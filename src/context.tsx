@@ -123,16 +123,16 @@ class BinaryST {
     this.printTree(root.right);
   }
   // find value in tree 
-  findValue(key: number): number[] {
-    let path: number[] = [];
+  findValue(key: number): string[] {
+    let path: string[] = [];
     this.find(this.root, key, path);
     return path;
   }
-  private find(root: BSTNode | null, key: number, path: number[]){
+  private find(root: BSTNode | null, key: number, path: string[]){
     if (!root) {
       return;
     }
-    path.push(root.value!);
+    path.push(root.id!);
     if (root.value === key) {
       return;
     } else if (root.value! < key) {

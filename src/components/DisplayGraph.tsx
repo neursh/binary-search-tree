@@ -1,7 +1,7 @@
-import Graph from 'graphology';
 import ForceSupervisor from 'graphology-layout-force/worker';
 import { useEffect, useRef } from 'react';
 import Sigma from 'sigma';
+import Context from '../context';
 
 export default function DisplayGraph() {
   const container = useRef<HTMLElement>(null);
@@ -10,30 +10,13 @@ export default function DisplayGraph() {
   useEffect(() => {
     if (container.current && !initialized.current) {
       initialized.current = true;
-      const graph = new Graph();
 
-      graph.addNode('1', {
-        label: 'Nigga 1',
-        x: 0,
-        y: 0,
-        size: 30,
-        color: '#1f2937',
-      });
-      graph.addNode('2', {
-        label: 'Nigga 2',
-        x: 1,
-        y: 1,
-        size: 30,
-        color: '#1f2937',
-      });
-      graph.addEdge('1', '2', { size: 5, color: '#1f2937' });
-
-      const layout = new ForceSupervisor(graph, {
+      const layout = new ForceSupervisor(Context.graph, {
         isNodeFixed: (_, attr) => attr.highlighted,
       });
       layout.start();
 
-      const renderer = new Sigma(graph, container.current);
+      const renderer = new Sigma(Context.graph, container.current);
 
       let draggedNode: string | null = null;
       let isDragging = false;
@@ -41,7 +24,7 @@ export default function DisplayGraph() {
       renderer.on('downNode', (e) => {
         isDragging = true;
         draggedNode = e.node;
-        graph.setNodeAttribute(draggedNode, 'highlighted', true);
+        Context.graph.setNodeAttribute(draggedNode, 'highlighted', true);
         if (!renderer.getCustomBBox())
           renderer.setCustomBBox(renderer.getBBox());
       });
@@ -51,8 +34,8 @@ export default function DisplayGraph() {
 
         const pos = renderer.viewportToGraph(event);
 
-        graph.setNodeAttribute(draggedNode, 'x', pos.x);
-        graph.setNodeAttribute(draggedNode, 'y', pos.y);
+        Context.graph.setNodeAttribute(draggedNode, 'x', pos.x);
+        Context.graph.setNodeAttribute(draggedNode, 'y', pos.y);
 
         event.preventSigmaDefault();
         event.original.preventDefault();
@@ -61,7 +44,7 @@ export default function DisplayGraph() {
 
       const handleUp = () => {
         if (draggedNode) {
-          graph.removeNodeAttribute(draggedNode, 'highlighted');
+          Context.graph.removeNodeAttribute(draggedNode, 'highlighted');
         }
         isDragging = false;
         draggedNode = null;

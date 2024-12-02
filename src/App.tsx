@@ -4,11 +4,13 @@ import Settings from './components/Settings';
 
 export default function App() {
   const mainRef = useRef<HTMLElement>(null);
+  const container = useRef<HTMLElement>(null);
+
   return (
     <>
       <main ref={mainRef} className="min-h-[100vh] min-w-full">
-        <DisplayGraph />
-        <Settings />
+        <DisplayGraph ref={container} />
+        <Settings ref={container} />
       </main>
     </>
   );

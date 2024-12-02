@@ -1,10 +1,10 @@
 import ForceSupervisor from 'graphology-layout-force/worker';
-import { useEffect, useRef } from 'react';
+import { forwardRef, MutableRefObject, useEffect, useRef } from 'react';
 import Sigma from 'sigma';
 import Context from '../context';
 
-export default function DisplayGraph() {
-  const container = useRef<HTMLElement>(null);
+const DisplayGraph = forwardRef<HTMLElement>((_, container) => {
+  container = container as MutableRefObject<HTMLElement>;
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -12,11 +12,14 @@ export default function DisplayGraph() {
       initialized.current = true;
 
       const layout = new ForceSupervisor(Context.graph, {
-        isNodeFixed: (_, attr) => attr.highlighted,
+        isNodeFixed: (id, attr) =>
+          attr.highlighted || Context.tree.root?.id === id,
       });
       layout.start();
 
-      const renderer = new Sigma(Context.graph, container.current);
+      const renderer = new Sigma(Context.graph, container.current, {
+        labelSize: 24,
+      });
 
       let draggedNode: string | null = null;
       let isDragging = false;
@@ -55,4 +58,6 @@ export default function DisplayGraph() {
   }, [container]);
 
   return <section ref={container} className="w-full h-screen"></section>;
-}
+});
+
+export default DisplayGraph;

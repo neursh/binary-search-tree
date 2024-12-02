@@ -71,18 +71,65 @@ class BinaryST {
   }
 
   private printTree(root: BSTNode | null): void {
-    if (root && !root.added) {
-      console.log(root.id);
-      this.printTree(root.left);
-      this.printTree(root.right);
+    if (!root) {
+      return;
     }
+
+    if (!root.added) {
+      Context.graph.addNode(root.id, {
+        label: root.value,
+        x: 0,
+        y: 0,
+        color: 'red',
+        size: 20,
+      });
+
+      root.added = true;
+    }
+
+    if (root.right && !root.right.added) {
+      Context.graph.addNode(root.right.id, {
+        label: root.right.value,
+        x: Math.random() * 10,
+        y: Math.random() * 10,
+        color: 'black',
+        size: 20,
+      });
+      Context.graph.addEdge(root.id, root.right.id, {
+        size: 4,
+        color: 'red',
+      });
+
+      root.right.added = true;
+    }
+
+    if (root.left && !root.left.added) {
+      Context.graph.addNode(root.left.id, {
+        label: root.left.value,
+        x: Math.random() * 10,
+        y: Math.random() * 10,
+        color: 'black',
+        size: 20,
+      });
+      Context.graph.addEdge(root.id, root.left.id, {
+        size: 4,
+        color: 'blue',
+      });
+
+      root.left.added = true;
+    }
+
+    this.printTree(root.left);
+    this.printTree(root.right);
   }
 }
 
 export default abstract class Context {
   static graph = new Graph();
 
-  static Buildtree(sequence: string): void {
+  static tree = new BinaryST();
+
+  static buildTree(sequence: string): void {
     // Process the input
     const matches = [...sequence.matchAll(/\d+/g)].join(' ');
     const userInput = matches.split(' ').map((value) => parseFloat(value));
@@ -91,16 +138,16 @@ export default abstract class Context {
       return;
     }
 
-    userInput.sort();
+    userInput.sort((a, b) => a - b);
 
     // Reset graph first.
     this.graph.clear();
 
     // Implementation of Buildtree method
-    const root = new BinaryST();
-    root.build(userInput);
+    Context.tree = new BinaryST();
+    Context.tree.build(userInput);
 
     // root.insert(10);
-    root.printTreeInorder();
+    Context.tree.printTreeInorder();
   }
 }

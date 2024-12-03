@@ -52,13 +52,41 @@ class BinaryST {
   }
 
   private insertNode(root: BSTNode, newNode: BSTNode): void {
-    if (root.value < newNode.value) {
+    if (root.value >= newNode.value) {
       if (!root.left) {
         root.left = newNode;
+        Context.graph.addNode(newNode.id, {
+          label: newNode.value,
+          x: Math.random() * 10,
+          y: Math.random() * 10,
+          color: 'black',
+          size: 20,
+        });
+        Context.graph.addEdge(root.id, newNode.id, {
+          size: 4,
+          color: 'blue',
+        });
+        newNode.added = true;
+      } else {
+        this.insertNode(root.left, newNode);
       }
-    } else if (root.value >= newNode.value) {
+    } else if (root.value < newNode.value) {
       if (!root.right) {
         root.right = newNode;
+        Context.graph.addNode(newNode.id, {
+          label: newNode.value,
+          x: Math.random() * 10,
+          y: Math.random() * 10,
+          color: 'black',
+          size: 20,
+        });
+        Context.graph.addEdge(root.id, newNode.id, {
+          size: 4,
+          color: 'red',
+        });
+        newNode.added = true;
+      } else {
+        this.insertNode(root.right, newNode);
       }
     }
   }
@@ -147,12 +175,14 @@ class BinaryST {
 
 export default abstract class Context {
   static graph = new Graph();
+  static previousInput: number[] = [];
   static tree = new BinaryST();
 
   static buildTree(sequence: string): void {
     // Process the input
-    const matches = [...sequence.matchAll(/\d+/g)].join(' ');
-    const userInput = matches.split(' ').map((value) => parseFloat(value));
+    const userInput = [...sequence.matchAll(/-?\d+(\.\d+)?/g)]
+      .map((value) => parseFloat(value[0]))
+      .filter((value) => !Number.isNaN(value));
 
     if (userInput.length === 0) {
       return;
@@ -160,15 +190,53 @@ export default abstract class Context {
 
     userInput.sort((a, b) => a - b);
 
+    let shouldRebuild = false;
+
+    // Always rebuild when we nothing to begin with.
+    if (Context.previousInput.length === 0) {
+      shouldRebuild = true;
+    }
+
+    // If the basic check above does not change, try go through to see if the new input
+    // does not change the original input.
+    if (!shouldRebuild) {
+      for (let i = 0; i < Context.previousInput.length; i++) {
+        if (Context.previousInput[i] !== userInput[i]) {
+          shouldRebuild = true;
+          break;
+        }
+      }
+    }
+
+    // Another check to let user rebuild if they wanted to force rebuild the tree.
+    if (Context.previousInput.length === userInput.length) {
+      shouldRebuild = true;
+    }
+
+    // The actual building stuff
+    if (!shouldRebuild) {
+      const newNode = userInput.filter(
+        (node) => !Context.previousInput.includes(node)
+      );
+      newNode.forEach((node) => Context.tree.insert(node));
+    } else {
+      Context.graph.clear();
+      Context.tree = new BinaryST();
+      Context.tree.build(userInput);
+      Context.tree.printTreeInorder();
+    }
+
+    Context.previousInput = userInput;
+
     // Reset graph first.
-    this.graph.clear();
+    // Context.graph.clear();
 
     // Implementation of Buildtree method
-    Context.tree = new BinaryST();
-    Context.tree.build(userInput);
+    // Context.tree = new BinaryST();
+    // Context.tree.build(userInput);
 
     // root.insert(10);
-    Context.tree.printTreeInorder();
-    console.log(Context.tree.findValue(1));
+    // Context.tree.printTreeInorder();
+    // Context.tree.insert(100000000);
   }
 }

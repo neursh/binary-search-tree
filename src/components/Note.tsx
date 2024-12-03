@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 
 export default function Note() {
   return (
-    <section className="fixed bottom-0 left-0 flex flex-col p-2 text-sm">
+    <section className="fixed bottom-0 left-0 flex flex-col p-2 sm:text-sm text-xs">
       <Annotate>
         <div className="w-3 h-1 bg-red-600 rounded-full"></div>
         <p>Right branch</p>

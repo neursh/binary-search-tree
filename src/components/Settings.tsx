@@ -2,6 +2,7 @@ import { useHookstate } from '@hookstate/core';
 import { motion } from 'framer-motion';
 import { forwardRef, MutableRefObject, useEffect, useRef } from 'react';
 import Context from '../context';
+import { useScreen } from '../hooks/screen';
 
 const Settings = forwardRef<HTMLElement>((_, container) => {
   container = container as MutableRefObject<HTMLElement>;
@@ -28,13 +29,17 @@ const Settings = forwardRef<HTMLElement>((_, container) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [container.current]);
 
+  const screen = useScreen();
+
   if (containerReceived.get()) {
     return (
       <section className="fixed top-0 right-0">
         <motion.div
           className="flex items-center"
           initial={{ translateX: 0 }}
-          animate={{ translateX: open.get() ? 0 : 384 }}
+          animate={{
+            translateX: open.get() ? 0 : screen.width >= 640 ? 384 : 240,
+          }}
           transition={{
             ease: [0.5, 0.5, 0, 1],
             duration: 0.5,
@@ -61,7 +66,7 @@ const Settings = forwardRef<HTMLElement>((_, container) => {
             </motion.svg>
           </div>
           <motion.div
-            className="relative w-96 h-48 m-2 p-2 rounded-lg outline outline-2 outline-slate-300 backdrop-blur-lg bg-white bg-opacity-50 flex flex-col"
+            className="relative sm:w-96 w-60 h-48 m-2 p-2 rounded-lg outline outline-2 outline-slate-300 backdrop-blur-lg bg-white bg-opacity-50 flex flex-col"
             initial={{ height: 192 }}
             animate={{ height: open.get() ? 192 : 96 }}
             transition={{
@@ -70,17 +75,19 @@ const Settings = forwardRef<HTMLElement>((_, container) => {
               duration: 0.5,
             }}
           >
-            <p className="font-semibold">Input:</p>
+            <p className="font-semibold sm:text-base text-sm">Input:</p>
             <textarea
               ref={input}
-              className="w-full h-[calc(100%-8px)] ml-1 mr-1 outline-none resize-none font-mono bg-transparent"
+              className="w-full h-[calc(100%-8px)] ml-1 mr-1 outline-none resize-none font-mono bg-transparent sm:text-base text-sm"
             />
             <div className="flex justify-between">
-              <div className="flex gap-2">
-                <p className="w-28 font-semibold">Find node:</p>
+              <div className="flex justify-start">
+                <p className="w-[120px] font-semibold sm:text-base text-sm">
+                  Find node:
+                </p>
                 <input
                   ref={findNodeInput}
-                  className="w-full bg-transparent outline-none pr-2"
+                  className="w-full bg-transparent outline-none sm:text-base text-sm"
                   onChange={() => {
                     const value = findNodeInput.current!.value;
 
@@ -91,8 +98,9 @@ const Settings = forwardRef<HTMLElement>((_, container) => {
                         nodeAttributes.color = 'black';
                       });
 
-                      const nodeAttributes =
-                        Context.graph.getNodeAttributes(pathCache.current[0]);
+                      const nodeAttributes = Context.graph.getNodeAttributes(
+                        pathCache.current[0]
+                      );
                       nodeAttributes.color = 'red';
 
                       pathCache.current = [];
@@ -123,50 +131,52 @@ const Settings = forwardRef<HTMLElement>((_, container) => {
                   }}
                 />
               </div>
-              <motion.div
-                className="h-6 cursor-pointer rounded-full outline-dotted outline-2 text-center overflow-hidden"
-                onClick={() => {
-                  if (!updating.get()) {
-                    updating.set(true);
-                    Context.buildTree(input.current!.value);
-                    setTimeout(() => updating.set(false), 1000);
-                  }
-                }}
-                initial={{ width: 64, rotate: 0 }}
-                animate={{
-                  width: updating.get() ? 24 : 64,
-                  rotate: updating.get() ? 360 : 0,
-                }}
-                transition={{
-                  width: {
-                    ease: [0.25, 0.25, 0, 1],
-                  },
-                  rotate: updating.get()
-                    ? {
-                      ease: [0, 0, 0, 0],
-                      delay: 0.25,
-                      repeatType: 'loop',
-                      repeat: Infinity,
-                      duration: 3,
+              <div className="h-6 min-w-[70px] flex justify-end">
+                <motion.div
+                  className="h-6 cursor-pointer rounded-full outline-dashed outline-1 text-center overflow-hidden flex items-center"
+                  onClick={() => {
+                    if (!updating.get()) {
+                      updating.set(true);
+                      Context.buildTree(input.current!.value);
+                      setTimeout(() => updating.set(false), 1000);
                     }
-                    : {
-                      duration: 0,
-                    },
-                }}
-              >
-                <motion.p
-                  initial={{ translateX: 0, opacity: 1 }}
+                  }}
+                  initial={{ width: 90, rotate: 0 }}
                   animate={{
-                    translateX: updating.get() ? 24 : 0,
-                    opacity: updating.get() ? 0 : 1,
+                    width: updating.get() ? 24 : 70,
+                    rotate: updating.get() ? 360 : 0,
                   }}
                   transition={{
-                    ease: [0.25, 0.25, 0, 1],
+                    width: {
+                      ease: [0.25, 0.25, 0, 1],
+                    },
+                    rotate: updating.get()
+                      ? {
+                          ease: [0, 0, 0, 0],
+                          delay: 0.25,
+                          repeatType: 'loop',
+                          repeat: Infinity,
+                          duration: 3,
+                        }
+                      : {
+                          duration: 0,
+                        },
                   }}
                 >
-                  Update
-                </motion.p>
-              </motion.div>
+                  <motion.p
+                    className="sm:text-base text-sm text-center w-full"
+                    initial={{ opacity: 1 }}
+                    animate={{
+                      opacity: updating.get() ? 0 : 1,
+                    }}
+                    transition={{
+                      ease: [0.25, 0.25, 0, 1],
+                    }}
+                  >
+                    Update
+                  </motion.p>
+                </motion.div>
+              </div>
             </div>
           </motion.div>
         </motion.div>

@@ -1,4 +1,3 @@
-import { col, label } from 'framer-motion/client';
 import Graph from 'graphology';
 import { nanoid } from 'nanoid';
 
@@ -181,8 +180,9 @@ export default abstract class Context {
 
   static buildTree(sequence: string): void {
     // Process the input
-    const matches = [...sequence.matchAll(/\d+/g)].join(' ');
-    const userInput = matches.split(' ').map((value) => parseFloat(value));
+    const userInput = [...sequence.matchAll(/-?\d+(\.\d+)?/g)]
+      .map((value) => parseFloat(value[0]))
+      .filter((value) => !Number.isNaN(value));
 
     if (userInput.length === 0) {
       return;
@@ -190,15 +190,42 @@ export default abstract class Context {
 
     userInput.sort((a, b) => a - b);
 
-    if (Context.previousInput.length !== 0) {
-      let newNode = userInput.filter(node => !Context.previousInput.includes(node));
-      newNode.forEach(node => Context.tree.insert(node));
+    let shouldRebuild = false;
+
+    // Always rebuild when we nothing to begin with.
+    if (Context.previousInput.length === 0) {
+      shouldRebuild = true;
+    }
+
+    // If the basic check above does not change, try go through to see if the new input
+    // does not change the original input.
+    if (!shouldRebuild) {
+      for (let i = 0; i < Context.previousInput.length; i++) {
+        if (Context.previousInput[i] !== userInput[i]) {
+          shouldRebuild = true;
+          break;
+        }
+      }
+    }
+
+    // Another check to let user rebuild if they wanted to force rebuild the tree.
+    if (Context.previousInput.length === userInput.length) {
+      shouldRebuild = true;
+    }
+
+    // The actual building stuff
+    if (!shouldRebuild) {
+      const newNode = userInput.filter(
+        (node) => !Context.previousInput.includes(node)
+      );
+      newNode.forEach((node) => Context.tree.insert(node));
     } else {
       Context.graph.clear();
       Context.tree = new BinaryST();
       Context.tree.build(userInput);
       Context.tree.printTreeInorder();
     }
+
     Context.previousInput = userInput;
 
     // Reset graph first.
@@ -211,6 +238,5 @@ export default abstract class Context {
     // root.insert(10);
     // Context.tree.printTreeInorder();
     // Context.tree.insert(100000000);
-    console.log(Context.tree.findValue(1));
   }
 }

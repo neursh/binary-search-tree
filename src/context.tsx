@@ -194,13 +194,16 @@ export default abstract class Context {
     userInput.sort((a, b) => a - b);
     //start here
     // find all values appear in userInput but not in previousInput
-    function findNewNode(userInput: number[], previousInput: number[]): number[] {
+    function findNewNode(
+      userInput: number[],
+      previousInput: number[]
+    ): number[] {
       const previousCount: number[] = [];
       previousInput.forEach((val) => {
-      previousCount[val] = (previousCount[val] || 0) + 1;
+        previousCount[val] = (previousCount[val] || 0) + 1;
       });
 
-      const newNode:number[] = [];
+      const newNode: number[] = [];
       userInput.forEach((val) => {
         if (!previousCount[val] || previousCount[val] <= 0) {
           newNode.push(val); // It's a new node
@@ -212,17 +215,22 @@ export default abstract class Context {
       return newNode;
     }
     const newNode: number[] = findNewNode(userInput, Context.previousInput);
+    const previousChange: number[] = findNewNode(
+      Context.previousInput,
+      userInput
+    );
     console.log(Context.previousInput, userInput, newNode);
+    console.log(Context.previousInput, userInput, previousChange);
     //end here
     let shouldRebuild = false;
-
     // Always rebuild when we nothing to begin with.
-    if (Context.previousInput.length === 0
-      || userInput.length <= Context.previousInput.length
+    if (
+      Context.previousInput.length === 0 ||
+      userInput.length <= Context.previousInput.length ||
+      (newNode.length !== previousChange.length && previousChange.length !== 0)
     ) {
       shouldRebuild = true;
     }
-
     // If the basic check above does not change, try go through to see if the new input
     // does not change the original input.
     // if (!shouldRebuild) {

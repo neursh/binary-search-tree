@@ -2,6 +2,7 @@ import { useHookstate } from '@hookstate/core';
 import { motion } from 'framer-motion';
 import { forwardRef, MutableRefObject, useEffect, useRef } from 'react';
 import Context from '../context';
+import { useScreen } from '../hooks/screen';
 
 const Settings = forwardRef<HTMLElement>((_, container) => {
   container = container as MutableRefObject<HTMLElement>;
@@ -28,13 +29,17 @@ const Settings = forwardRef<HTMLElement>((_, container) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [container.current]);
 
+  const screen = useScreen();
+
   if (containerReceived.get()) {
     return (
       <section className="fixed top-0 right-0">
         <motion.div
           className="flex items-center"
           initial={{ translateX: 0 }}
-          animate={{ translateX: open.get() ? 0 : 384 }}
+          animate={{
+            translateX: open.get() ? 0 : screen.width >= 640 ? 384 : 240,
+          }}
           transition={{
             ease: [0.5, 0.5, 0, 1],
             duration: 0.5,

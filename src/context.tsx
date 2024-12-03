@@ -188,9 +188,6 @@ export default abstract class Context {
       return;
     }
 
-    // const newNode = userInput.filter(
-    //   (node) => !Context.previousInput.includes(node)
-    // );
     userInput.sort((a, b) => a - b);
     //start here
     // find all values appear in userInput but not in previousInput
@@ -219,11 +216,11 @@ export default abstract class Context {
       Context.previousInput,
       userInput
     );
-    console.log(Context.previousInput, userInput, newNode);
-    console.log(Context.previousInput, userInput, previousChange);
+    
     //end here
+
     let shouldRebuild = false;
-    // Always rebuild when we nothing to begin with.
+    // Always rebuild when we have nothing to begin with.
     if (
       Context.previousInput.length === 0 ||
       userInput.length <= Context.previousInput.length ||
@@ -231,21 +228,7 @@ export default abstract class Context {
     ) {
       shouldRebuild = true;
     }
-    // If the basic check above does not change, try go through to see if the new input
-    // does not change the original input.
-    // if (!shouldRebuild) {
-    //   for (let i = 0; i < Context.previousInput.length; i++) {
-    //     if (Context.previousInput[i] !== userInput[i]) {
-    //       shouldRebuild = true;
-    //       break;
-    //     }
-    //   }
-    // }
-
-    // Another check to let user rebuild if they wanted to force rebuild the tree.
-    // if (Context.previousInput.length === userInput.length) {
-    //   shouldRebuild = true;
-    // }
+    
     // The actual building stuff
     if (!shouldRebuild) {
       newNode.forEach((node) => Context.tree.insert(node));
@@ -256,16 +239,5 @@ export default abstract class Context {
       Context.tree.printTreeInorder();
     }
     Context.previousInput = userInput;
-
-    // Reset graph first.
-    // Context.graph.clear();
-
-    // Implementation of Buildtree method
-    // Context.tree = new BinaryST();
-    // Context.tree.build(userInput);
-
-    // root.insert(10);
-    // Context.tree.printTreeInorder();
-    // Context.tree.insert(100000000);
   }
 }

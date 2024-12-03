@@ -1,3 +1,4 @@
+import { col, label } from 'framer-motion/client';
 import Graph from 'graphology';
 import { nanoid } from 'nanoid';
 
@@ -52,13 +53,41 @@ class BinaryST {
   }
 
   private insertNode(root: BSTNode, newNode: BSTNode): void {
-    if (root.value < newNode.value) {
+    if (root.value >= newNode.value) {
       if (!root.left) {
         root.left = newNode;
+        Context.graph.addNode(newNode.id, {
+          label: newNode.value,
+          x: Math.random() * 10,
+          y: Math.random() * 10,
+          color: 'black',
+          size: 20,
+        });
+        Context.graph.addEdge(root.id, newNode.id, {
+          size: 4,
+          color: 'blue',
+        });
+        newNode.added = true;
+      } else {
+        this.insertNode(root.left, newNode);
       }
-    } else if (root.value >= newNode.value) {
+    } else if (root.value < newNode.value) {
       if (!root.right) {
         root.right = newNode;
+        Context.graph.addNode(newNode.id, {
+          label: newNode.value,
+          x: Math.random() * 10,
+          y: Math.random() * 10,
+          color: 'black',
+          size: 20,
+        });
+        Context.graph.addEdge(root.id, newNode.id, {
+          size: 4,
+          color: 'red',
+        });
+        newNode.added = true;
+      } else {
+        this.insertNode(root.right, newNode);
       }
     }
   }
@@ -147,6 +176,7 @@ class BinaryST {
 
 export default abstract class Context {
   static graph = new Graph();
+  static previousInput: number[] = [];
   static tree = new BinaryST();
 
   static buildTree(sequence: string): void {
@@ -160,15 +190,27 @@ export default abstract class Context {
 
     userInput.sort((a, b) => a - b);
 
+    if (Context.previousInput.length !== 0) {
+      let newNode = userInput.filter(node => !Context.previousInput.includes(node));
+      newNode.forEach(node => Context.tree.insert(node));
+    } else {
+      Context.graph.clear();
+      Context.tree = new BinaryST();
+      Context.tree.build(userInput);
+      Context.tree.printTreeInorder();
+    }
+    Context.previousInput = userInput;
+
     // Reset graph first.
-    this.graph.clear();
+    // Context.graph.clear();
 
     // Implementation of Buildtree method
-    Context.tree = new BinaryST();
-    Context.tree.build(userInput);
+    // Context.tree = new BinaryST();
+    // Context.tree.build(userInput);
 
     // root.insert(10);
-    Context.tree.printTreeInorder();
+    // Context.tree.printTreeInorder();
+    // Context.tree.insert(100000000);
     console.log(Context.tree.findValue(1));
   }
 }

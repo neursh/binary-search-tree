@@ -77,10 +77,10 @@ const Settings = forwardRef<HTMLElement>((_, container) => {
             />
             <div className="flex justify-between">
               <div className="flex gap-2">
-                <p className="font-semibold">Find node:</p>
+                <p className="w-28 font-semibold">Find node:</p>
                 <input
                   ref={findNodeInput}
-                  className="bg-transparent outline-none"
+                  className="w-full bg-transparent outline-none pr-2"
                   onChange={() => {
                     const value = findNodeInput.current!.value;
 
@@ -143,15 +143,15 @@ const Settings = forwardRef<HTMLElement>((_, container) => {
                   },
                   rotate: updating.get()
                     ? {
-                        ease: [0, 0, 0, 0],
-                        delay: 0.25,
-                        repeatType: 'loop',
-                        repeat: Infinity,
-                        duration: 3,
-                      }
+                      ease: [0, 0, 0, 0],
+                      delay: 0.25,
+                      repeatType: 'loop',
+                      repeat: Infinity,
+                      duration: 3,
+                    }
                     : {
-                        duration: 0,
-                      },
+                      duration: 0,
+                    },
                 }}
               >
                 <motion.p

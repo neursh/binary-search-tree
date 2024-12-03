@@ -189,35 +189,48 @@ export default abstract class Context {
     }
 
     userInput.sort((a, b) => a - b);
+    //start here
+    // find all values appear in userInput but not in previousInput
+    function findNewNode(
+      userInput: number[],
+      previousInput: number[]
+    ): number[] {
+      const previousCount: number[] = [];
+      previousInput.forEach((val) => {
+        previousCount[val] = (previousCount[val] || 0) + 1;
+      });
+
+      const newNode: number[] = [];
+      userInput.forEach((val) => {
+        if (!previousCount[val] || previousCount[val] <= 0) {
+          newNode.push(val); // It's a new node
+        } else {
+          previousCount[val]--; // Decrement count in previous input
+        }
+      });
+
+      return newNode;
+    }
+    const newNode: number[] = findNewNode(userInput, Context.previousInput);
+    const previousChange: number[] = findNewNode(
+      Context.previousInput,
+      userInput
+    );
+    
+    //end here
 
     let shouldRebuild = false;
-
-    // Always rebuild when we nothing to begin with.
-    if (Context.previousInput.length === 0) {
+    // Always rebuild when we have nothing to begin with.
+    if (
+      Context.previousInput.length === 0 ||
+      userInput.length <= Context.previousInput.length ||
+      (newNode.length !== previousChange.length && previousChange.length !== 0)
+    ) {
       shouldRebuild = true;
     }
-
-    // If the basic check above does not change, try go through to see if the new input
-    // does not change the original input.
-    if (!shouldRebuild) {
-      for (let i = 0; i < Context.previousInput.length; i++) {
-        if (Context.previousInput[i] !== userInput[i]) {
-          shouldRebuild = true;
-          break;
-        }
-      }
-    }
-
-    // Another check to let user rebuild if they wanted to force rebuild the tree.
-    if (Context.previousInput.length === userInput.length) {
-      shouldRebuild = true;
-    }
-
+    
     // The actual building stuff
     if (!shouldRebuild) {
-      const newNode = userInput.filter(
-        (node) => !Context.previousInput.includes(node)
-      );
       newNode.forEach((node) => Context.tree.insert(node));
     } else {
       Context.graph.clear();
@@ -225,18 +238,6 @@ export default abstract class Context {
       Context.tree.build(userInput);
       Context.tree.printTreeInorder();
     }
-
     Context.previousInput = userInput;
-
-    // Reset graph first.
-    // Context.graph.clear();
-
-    // Implementation of Buildtree method
-    // Context.tree = new BinaryST();
-    // Context.tree.build(userInput);
-
-    // root.insert(10);
-    // Context.tree.printTreeInorder();
-    // Context.tree.insert(100000000);
   }
 }

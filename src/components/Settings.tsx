@@ -91,6 +91,10 @@ const Settings = forwardRef<HTMLElement>((_, container) => {
                         nodeAttributes.color = 'black';
                       });
 
+                      const nodeAttributes =
+                        Context.graph.getNodeAttributes(pathCache.current[0]);
+                      nodeAttributes.color = 'red';
+
                       pathCache.current = [];
                     }
 
